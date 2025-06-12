@@ -15,13 +15,9 @@ jobs:
       matrix:
         include:
           - home-assistant: "2025.5.3"
-            python-version: "3.11"
-          - home-assistant: "2025.5.3"
-            python-version: "3.12"
+            python-version: "3.13"
           - home-assistant: "2025.6.0"
-            python-version: "3.11"
-          - home-assistant: "2025.6.0"
-            python-version: "3.12"
+            python-version: "3.13"
 
     steps:
     - uses: actions/checkout@v3
