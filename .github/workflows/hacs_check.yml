@@ -2,7 +2,11 @@ name: HACS Action
 
 on:
   push:
+    branches:
+      - disabled-workflow
   pull_request:
+    branches:
+      - disabled-workflow
 
 jobs:
   hacs:
