@@ -5,7 +5,6 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.config_entries import ConfigFlowResult
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
-from homeassistant.data_entry_flow import FlowResult
 
 from .const import DOMAIN
 
@@ -21,9 +20,10 @@ class HonFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self._password: str | None = None
 
     async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
+            self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         if user_input is None:
+            # noinspection PyTypeChecker
             return self.async_show_form(
                 step_id="user",
                 data_schema=vol.Schema(
@@ -35,6 +35,7 @@ class HonFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self._password = user_input[CONF_PASSWORD]
 
         if self._email is None or self._password is None:
+            # noinspection PyTypeChecker
             return self.async_show_form(
                 step_id="user",
                 data_schema=vol.Schema(
@@ -46,6 +47,7 @@ class HonFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         await self.async_set_unique_id(self._email)
         self._abort_if_unique_id_configured()
 
+        # noinspection PyTypeChecker
         return self.async_create_entry(
             title=self._email,
             data={
@@ -55,4 +57,5 @@ class HonFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def async_step_import(self, user_input: dict[str, str]) -> ConfigFlowResult:
+        # noinspection PyTypeChecker
         return await self.async_step_user(user_input)
