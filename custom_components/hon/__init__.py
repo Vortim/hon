@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Any
 
-import voluptuous as vol  # type: ignore[import-untyped]
+import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.helpers import config_validation as cv, aiohttp_client
@@ -65,8 +65,8 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry) -> boo
     hass.config_entries.async_update_entry(
         entry, data={**entry.data, CONF_REFRESH_TOKEN: refresh_token}
     )
-    unload = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-    if unload:
+    unload_ok = bool(await hass.config_entries.async_unload_platforms(entry, PLATFORMS))
+    if unload_ok:
         if not hass.data[DOMAIN]:
             hass.data.pop(DOMAIN, None)
-    return unload
+    return unload_ok
