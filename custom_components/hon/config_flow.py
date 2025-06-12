@@ -20,7 +20,7 @@ class HonFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         self._password: str | None = None
 
     async def async_step_user(
-            self, user_input: dict[str, Any] | None = None
+        self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         if user_input is None:
             # noinspection PyTypeChecker
