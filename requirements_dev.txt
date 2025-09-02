@@ -3,5 +3,5 @@ flake8>=6.0
 mypy>=0.991
 pylint>=2.15
 
-homeassistant~=2025.6.0
+homeassistant~=2025.8.3
 voluptuous~=0.15.2
