@@ -48,11 +48,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator: DataUpdateCoordinator[dict[str, Any]] = DataUpdateCoordinator(
         hass, _LOGGER, name=DOMAIN
     )
-    hon.subscribe_updates(
-        lambda data: hass.loop.call_soon_threadsafe(
-            coordinator.async_set_updated_data, data
-        )
-    )
+    def _notify(data: Any) -> None:
+        hass.loop.call_soon_threadsafe(coordinator.async_set_updated_data, data)
+
+    hon.subscribe_updates(_notify)
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.unique_id] = {"hon": hon, "coordinator": coordinator}
