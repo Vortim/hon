@@ -48,6 +48,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator: DataUpdateCoordinator[dict[str, Any]] = DataUpdateCoordinator(
         hass, _LOGGER, name=DOMAIN
     )
+
     def _notify(data: Any) -> None:
         hass.loop.call_soon_threadsafe(coordinator.async_set_updated_data, data)
 
