@@ -1,4 +1,6 @@
+import importlib
 import logging
+import pkgutil
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv, aiohttp_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from pyhon import Hon
+import pyhon.appliances
 
 from .const import DOMAIN, PLATFORMS, MOBILE_ID, CONF_REFRESH_TOKEN
 
@@ -27,10 +30,16 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 
+def _preload_pyhon_appliances() -> None:
+    for _, name, _ in pkgutil.iter_modules(pyhon.appliances.__path__):
+        importlib.import_module(f"pyhon.appliances.{name}")
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     session = aiohttp_client.async_get_clientsession(hass)
     if (config_dir := hass.config.config_dir) is None:
         raise ValueError("Missing Config Dir")
+    await hass.async_add_executor_job(_preload_pyhon_appliances)
     hon = await Hon(
         email=entry.data[CONF_EMAIL],
         password=entry.data[CONF_PASSWORD],
