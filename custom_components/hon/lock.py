@@ -26,7 +26,7 @@ LOCKS: dict[str, tuple[LockEntityDescription, ...]] = {
 
 
 async def async_setup_entry(
-        hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     entities = []
     for device in hass.data[DOMAIN][entry.unique_id]["hon"].appliances:

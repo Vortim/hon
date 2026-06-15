@@ -104,7 +104,7 @@ CLIMATES: dict[
 
 
 async def async_setup_entry(
-        hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     entities = []
     entity: HonClimateEntity | HonACClimateEntity
@@ -130,7 +130,7 @@ class HonACClimateEntity(HonEntity, ClimateEntity):
 
     def __init__(
         self,
-            hass: HomeAssistant,
+        hass: HomeAssistant,
         entry: ConfigEntry,
         device: HonAppliance,
         description: HonACClimateEntityDescription,
@@ -299,7 +299,7 @@ class HonClimateEntity(HonEntity, ClimateEntity):
 
     def __init__(
         self,
-            hass: HomeAssistant,
+        hass: HomeAssistant,
         entry: ConfigEntry,
         device: HonAppliance,
         description: HonClimateEntityDescription,

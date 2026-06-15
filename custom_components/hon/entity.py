@@ -20,7 +20,7 @@ class HonEntity(CoordinatorEntity[DataUpdateCoordinator[dict[str, Any]]]):
 
     def __init__(
         self,
-            hass: HomeAssistant,
+        hass: HomeAssistant,
         entry: ConfigEntry,
         device: HonAppliance,
         description: Optional[HonEntityDescription] = None,

@@ -207,7 +207,7 @@ NUMBERS["WD"] = unique_entities(NUMBERS["WM"], NUMBERS["TD"])
 
 
 async def async_setup_entry(
-        hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     entities = []
     entity: HonNumberEntity | HonConfigNumberEntity
@@ -230,7 +230,7 @@ class HonNumberEntity(HonEntity, NumberEntity):
 
     def __init__(
         self,
-            hass: HomeAssistant,
+        hass: HomeAssistant,
         entry: ConfigEntry,
         device: HonAppliance,
         description: HonNumberEntityDescription,
@@ -285,7 +285,7 @@ class HonConfigNumberEntity(HonEntity, NumberEntity):
 
     def __init__(
         self,
-            hass: HomeAssistant,
+        hass: HomeAssistant,
         entry: ConfigEntry,
         device: HonAppliance,
         description: HonConfigNumberEntityDescription,

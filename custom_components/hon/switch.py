@@ -403,7 +403,7 @@ SWITCHES["WD"] = unique_entities(SWITCHES["WD"], SWITCHES["TD"])
 
 
 async def async_setup_entry(
-        hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     entities = []
     entity: HonConfigSwitchEntity | HonControlSwitchEntity | HonSwitchEntity

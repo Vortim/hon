@@ -808,7 +808,7 @@ SENSORS["WD"] = unique_entities(SENSORS["WM"], SENSORS["TD"])
 
 
 async def async_setup_entry(
-        hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     entities = []
     entity: HonSensorEntity | HonConfigSensorEntity

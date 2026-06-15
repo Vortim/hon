@@ -211,7 +211,7 @@ SELECTS["WD"] = unique_entities(SELECTS["WM"], SELECTS["TD"])
 
 
 async def async_setup_entry(
-        hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     entities = []
     entity: HonSelectEntity | HonConfigSelectEntity

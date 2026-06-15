@@ -53,7 +53,7 @@ LIGHTS: dict[str, tuple[LightEntityDescription, ...]] = {
 
 
 async def async_setup_entry(
-        hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+    hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     entities = []
     for device in hass.data[DOMAIN][entry.unique_id]["hon"].appliances:
@@ -73,7 +73,7 @@ class HonLightEntity(HonEntity, LightEntity):
 
     def __init__(
         self,
-            hass: HomeAssistant,
+        hass: HomeAssistant,
         entry: ConfigEntry,
         device: HonAppliance,
         description: LightEntityDescription,
