@@ -83,10 +83,8 @@ def _patch_pyhon_appliance_list_endpoint() -> None:
         return
 
     async def load_appliances(self):  # type: ignore[no-untyped-def]
-        async with self._hon.post(
-                f"{const.API_URL}/unified-api/v1/view/appliance-list",
-                json={"deviceId": "homeassistant"},
-        ) as response:
+        url = f"{const.API_URL}/unified-api/v1/view/appliance-list"
+        async with self._hon.post(url, json={"deviceId": "homeassistant"}) as response:
             result = await response.json()
         try:
             appliances = result["modules"]["applianceList"]["payload"]["appliances"]
