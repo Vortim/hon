@@ -57,7 +57,7 @@ def _patch_pyhon_custom_scheme_oauth() -> None:
         return await _original_manual_redirect(self, url)
 
     HonAuth._manual_redirect = _manual_redirect  # type: ignore[method-assign]
-    HonAuth._custom_scheme_patched = True
+    setattr(HonAuth, "_custom_scheme_patched", True)
     _LOGGER.debug("hon: applied pyhon custom-scheme OAuth redirect patch")
 
 
@@ -95,7 +95,7 @@ def _patch_pyhon_appliance_list_endpoint() -> None:
         return appliances or []
 
     HonAPI.load_appliances = load_appliances  # type: ignore[method-assign]
-    HonAPI._unified_appliance_list_patched = True
+    setattr(HonAPI, "_unified_appliance_list_patched", True)
     _LOGGER.debug("hon: applied unified-api appliance-list endpoint patch")
 
 
