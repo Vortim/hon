@@ -1,21 +1,106 @@
 import importlib
 import logging
 import pkgutil
-from pathlib import Path
-from typing import Any
-
+import pyhon.appliances
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv, aiohttp_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from pathlib import Path
 from pyhon import Hon
-import pyhon.appliances
+from typing import Any
 
 from .const import DOMAIN, PLATFORMS, MOBILE_ID, CONF_REFRESH_TOKEN
 
 _LOGGER = logging.getLogger(__name__)
+
+
+def _patch_pyhon_custom_scheme_oauth() -> None:
+    """Let pyhon finish login when Haier redirects to its custom-scheme callback.
+
+    Haier's Salesforce OAuth flow ends by redirecting to
+    ``hon://mobilesdk/detect/oauth/done#access_token=...`` (tokens in the
+    fragment). pyhon's ``_manual_redirect`` blindly does ``aiohttp.get()`` on
+    every redirect URL; modern aiohttp rejects non-HTTP schemes with
+    ``NonHttpUrlClientError``, so login dies before the tokens are read.
+
+    Parse the tokens straight out of that terminal URL instead — exactly what
+    pyhon's own ``_introduce`` already does for the same callback (it calls
+    ``_parse_token_data`` then raises ``HonNoAuthenticationNeeded``, which
+    ``authenticate`` catches as success). Idempotent and best-effort: if pyhon's
+    internals differ it leaves the library untouched.
+    """
+    try:
+        from pyhon import exceptions
+        from pyhon.connection.auth import HonAuth
+    except Exception:  # noqa: BLE001
+        _LOGGER.debug(
+            "hon: could not import pyhon auth to apply OAuth patch", exc_info=True
+        )
+        return
+    if getattr(HonAuth, "_custom_scheme_patched", False):
+        return
+    _original_manual_redirect = HonAuth._manual_redirect
+
+    async def _manual_redirect(self, url):  # type: ignore[no-untyped-def]
+        if isinstance(url, str) and "oauth/done#access_token=" in url:
+            # Terminal Salesforce OAuth callback with the tokens in the URL
+            # fragment. Parse them, then finish auth the same way the full
+            # login does next (exchange id_token for the Cognito API token)
+            # before signalling completion — otherwise load_appliances() runs
+            # without API auth and returns an empty list.
+            self._parse_token_data(url)
+            await self._api_auth()
+            raise exceptions.HonNoAuthenticationNeeded()
+        return await _original_manual_redirect(self, url)
+
+    HonAuth._manual_redirect = _manual_redirect  # type: ignore[method-assign]
+    HonAuth._custom_scheme_patched = True
+    _LOGGER.debug("hon: applied pyhon custom-scheme OAuth redirect patch")
+
+
+def _patch_pyhon_appliance_list_endpoint() -> None:
+    """Point pyhon's load_appliances at Haier's new appliance-list endpoint.
+
+    Around 2026-06 Haier retired ``GET /commands/v1/appliance`` (it now returns
+    an empty list) and moved the device list to
+    ``POST /unified-api/v1/view/appliance-list`` with body
+    ``{"deviceId": "homeassistant"}``. The returned appliance objects keep the
+    same field names (nickName, macAddress, applianceTypeName, ...), so the rest
+    of pyhon is unchanged. Best-effort and idempotent.
+    """
+    try:
+        from pyhon import const
+        from pyhon.connection.api import HonAPI
+    except Exception:  # noqa: BLE001
+        _LOGGER.debug(
+            "hon: could not import pyhon api to apply endpoint patch", exc_info=True
+        )
+        return
+    if getattr(HonAPI, "_unified_appliance_list_patched", False):
+        return
+
+    async def load_appliances(self):  # type: ignore[no-untyped-def]
+        async with self._hon.post(
+                f"{const.API_URL}/unified-api/v1/view/appliance-list",
+                json={"deviceId": "homeassistant"},
+        ) as response:
+            result = await response.json()
+        try:
+            appliances = result["modules"]["applianceList"]["payload"]["appliances"]
+        except (KeyError, TypeError):
+            return []
+        return appliances or []
+
+    HonAPI.load_appliances = load_appliances  # type: ignore[method-assign]
+    HonAPI._unified_appliance_list_patched = True
+    _LOGGER.debug("hon: applied unified-api appliance-list endpoint patch")
+
+
+_patch_pyhon_custom_scheme_oauth()
+_patch_pyhon_appliance_list_endpoint()
 
 HON_SCHEMA = vol.Schema(
     {
