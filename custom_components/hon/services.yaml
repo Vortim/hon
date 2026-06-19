@@ -1,0 +1,28 @@
+set_settings:
+  name: Set settings (single command)
+  description: >-
+    Stage several hOn settings and send them as ONE command (one device beep)
+    instead of one command per entity. Friendly values are accepted
+    (e.g. machMode cool, windDirectionHorizontal position_2, muteStatus on);
+    unrecognised values pass through unchanged.
+  target:
+    device:
+      integration: hon
+  fields:
+    settings:
+      name: Settings
+      description: >-
+        Map of settings parameter -> value. Common AC keys: onOffStatus,
+        machMode, tempSel, windDirectionHorizontal, windDirectionVertical,
+        muteStatus (silent mode), screenDisplayStatus, healthMode, rapidMode.
+      required: true
+      example: |
+        onOffStatus: "on"
+        machMode: cool
+        tempSel: 24
+        windDirectionHorizontal: position_2
+        windDirectionVertical: position_5
+        muteStatus: "on"
+        screenDisplayStatus: "off"
+      selector:
+        object:

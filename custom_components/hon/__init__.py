@@ -1,3 +1,4 @@
+import asyncio
 import importlib
 import logging
 import pkgutil
@@ -13,6 +14,7 @@ from pyhon import Hon
 from typing import Any
 
 from .const import DOMAIN, PLATFORMS, MOBILE_ID, CONF_REFRESH_TOKEN
+from .services import async_register_services
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -97,8 +99,64 @@ def _patch_pyhon_appliance_list_endpoint() -> None:
     _LOGGER.debug("hon: applied unified-api appliance-list endpoint patch")
 
 
+def _patch_pyhon_mqtt_watchdog() -> None:
+    """Give the MQTT reconnect watchdog exponential backoff and client cleanup.
+
+    pyhon's ``MQTTClient._watchdog`` retries on a fixed 5 s interval: while the
+    connection is down it calls ``_start()`` every 5 s, and each ``_start()``
+    makes an HTTP ``auth/v1/introspection`` call (``load_aws_token``). A
+    sustained failure (cloud outage, or auth that never recovers) therefore
+    hammers Haier's API at ~720 req/h with no backoff. It also overwrites
+    ``self._client`` without stopping the previous client, leaking AWS mqtt5
+    clients that keep retrying on their own.
+
+    Replace it with a version that backs off 5 s → 300 s, resets to 5 s once
+    connected, and stops the stale client before rebuilding. Best-effort and
+    idempotent; if pyhon's internals differ it leaves the library untouched.
+    """
+    try:
+        from pyhon.connection.mqtt import MQTTClient
+    except Exception:  # noqa: BLE001
+        _LOGGER.debug(
+            "hon: could not import pyhon mqtt to apply watchdog patch", exc_info=True
+        )
+        return
+    if getattr(MQTTClient, "_watchdog_backoff_patched", False):
+        return
+
+    min_delay, max_delay = 5, 300
+
+    async def _watchdog(self):  # type: ignore[no-untyped-def]
+        delay = min_delay
+        while True:
+            await asyncio.sleep(delay)
+            if self._connection:
+                delay = min_delay
+                continue
+            _LOGGER.info("Restart mqtt connection (next retry in %ss)", delay)
+            old = self._client
+            if old is not None:
+                try:
+                    old.stop()
+                except Exception:  # noqa: BLE001
+                    _LOGGER.debug(
+                        "hon: failed stopping stale mqtt client", exc_info=True
+                    )
+            try:
+                await self._start()
+                self._subscribe_appliances()
+            except Exception:  # noqa: BLE001
+                _LOGGER.debug("hon: mqtt reconnect attempt failed", exc_info=True)
+            delay = min(max_delay, delay * 2)
+
+    MQTTClient._watchdog = _watchdog  # type: ignore[method-assign]
+    setattr(MQTTClient, "_watchdog_backoff_patched", True)
+    _LOGGER.debug("hon: applied mqtt watchdog backoff patch")
+
+
 _patch_pyhon_custom_scheme_oauth()
 _patch_pyhon_appliance_list_endpoint()
+_patch_pyhon_mqtt_watchdog()
 
 HON_SCHEMA = vol.Schema(
     {
@@ -148,6 +206,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.unique_id] = {"hon": hon, "coordinator": coordinator}
+
+    async_register_services(hass)
 
     hass.async_create_task(
         hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
