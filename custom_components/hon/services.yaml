@@ -1,8 +1,10 @@
 set_settings:
-  target:
-    device:
-      integration: hon
   fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: hon
     settings:
       required: true
       example: |

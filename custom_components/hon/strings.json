@@ -2302,6 +2302,10 @@
             "name": "Set settings (single command)",
             "description": "Stage several hOn settings and send them in a single command (one device beep) instead of one command per entity. Friendly values are accepted (e.g. machMode cool, windDirectionHorizontal position_2, muteStatus on).",
             "fields": {
+                "device_id": {
+                    "name": "Device",
+                    "description": "The hOn appliance to apply the settings to."
+                },
                 "settings": {
                     "name": "Settings",
                     "description": "Map of settings parameter to value, e.g. onOffStatus on, machMode cool, tempSel 24, windDirectionHorizontal position_2, windDirectionVertical position_5, muteStatus on, screenDisplayStatus off."
