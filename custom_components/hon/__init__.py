@@ -2,6 +2,7 @@ import asyncio
 import importlib
 import logging
 import pkgutil
+import sys
 import pyhon.appliances
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
@@ -10,6 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv, aiohttp_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from pathlib import Path
+from types import SimpleNamespace
 from pyhon import Hon
 from typing import Any
 
@@ -172,8 +174,41 @@ CONFIG_SCHEMA = vol.Schema(
 
 
 def _preload_pyhon_appliances() -> None:
+    """Do pyhon's blocking imports/metadata reads here, in the executor.
+
+    After this, every existing ``pyhon.appliances.*`` module is in
+    ``sys.modules``. pyhon's ``HonAppliance.__init__`` still calls
+    ``importlib.import_module`` for types with no module (e.g. ``ac``), which
+    scans the disk on the event loop before raising ``ModuleNotFoundError``,
+    so short-circuit those. ``awsiot`` reads its own package metadata on every
+    MQTT (re)connect; resolve it once here and cache it.
+    """
     for _, name, _ in pkgutil.iter_modules(pyhon.appliances.__path__):
         importlib.import_module(f"pyhon.appliances.{name}")
+
+    try:
+        from pyhon import appliance as pyhon_appliance
+
+        if not getattr(pyhon_appliance, "_import_shim_patched", False):
+
+            def _import_module(name: str, package: str | None = None) -> Any:
+                if name.startswith("pyhon.appliances.") and name not in sys.modules:
+                    raise ModuleNotFoundError(f"No module named {name!r}", name=name)
+                return importlib.import_module(name, package)
+
+            shim = SimpleNamespace(import_module=_import_module)
+            setattr(pyhon_appliance, "importlib", shim)
+            setattr(pyhon_appliance, "_import_shim_patched", True)
+    except Exception:  # noqa: BLE001
+        _LOGGER.debug("hon: pyhon appliance import shim not applied", exc_info=True)
+
+    try:
+        from awsiot import _iot_metrics  # type: ignore[import-untyped]
+
+        sdk_version = _iot_metrics._get_sdk_version()
+        _iot_metrics._get_sdk_version = lambda: sdk_version
+    except Exception:  # noqa: BLE001
+        _LOGGER.debug("hon: awsiot sdk version cache not applied", exc_info=True)
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
