@@ -1,0 +1,61 @@
+name: Auto release
+
+# HACS installs this integration from release zips only (hacs.json: zip_release),
+# so publish a patch release after every green "Python check" run on main that
+# touched the integration. Releases created with GITHUB_TOKEN don't trigger
+# release.yml, so the zip is built and attached here.
+
+on:
+  workflow_run:
+    workflows: ["Python check"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Decide next version
+        id: version
+        run: |
+          last=$(git tag --list 'v*' --sort=-v:refname | head -n1)
+          if [ -n "$last" ] && [ -z "$(git diff --name-only "$last" HEAD -- custom_components/)" ]; then
+            echo "No integration changes since $last, skipping release."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          IFS=. read -r major minor patch <<< "${last#v}"
+          next="v${major:-0}.${minor:-0}.$(( ${patch:-0} + 1 ))"
+          echo "Releasing $next (previous: ${last:-none})"
+          echo "tag=$next" >> "$GITHUB_OUTPUT"
+
+      - name: Build zip
+        if: steps.version.outputs.skip != 'true'
+        run: |
+          tag=${{ steps.version.outputs.tag }}
+          cd custom_components/hon
+          jq --arg v "${tag#v}" '.version = $v' manifest.json > manifest.tmp && mv manifest.tmp manifest.json
+          zip -r "$GITHUB_WORKSPACE/haier_hon.zip" ./
+
+      - name: Publish release
+        if: steps.version.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" haier_hon.zip \
+            --target "${{ github.event.workflow_run.head_sha }}" \
+            --title "${{ steps.version.outputs.tag }}" \
+            --generate-notes
