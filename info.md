@@ -1,6 +1,6 @@
 # Haier hOn
-[![GitHub all releases](https://img.shields.io/github/downloads/Andre0512/hon/total?color=blue&label=total%20downloads)](https://tooomm.github.io/github-release-stats/?username=Andre0512&repository=hon)
-[![GitHub](https://img.shields.io/github/license/Andre0512/hon?color=red)](https://github.com/Andre0512/hon/blob/main/LICENSE)
+[![GitHub all releases](https://img.shields.io/github/downloads/Vortim/hon/total?color=blue&label=total%20downloads)](https://tooomm.github.io/github-release-stats/?username=Vortim&repository=hon)
+[![GitHub](https://img.shields.io/github/license/Vortim/hon?color=red)](https://github.com/Vortim/hon/blob/main/LICENSE)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-donate-orange.svg)](https://www.buymeacoffee.com/andre0512)
 
 ---
@@ -8,10 +8,10 @@ Home Assistant integration for [Haier's mobile app hOn](https://hon-smarthome.co
 
 ---
 
-[![Supported Languages](https://img.shields.io/badge/Languages-28-royalblue)](https://github.com/Andre0512/hon#supported-languages)
-[![Supported Appliances](https://img.shields.io/badge/Appliances-11-forestgreen)](https://github.com/Andre0512/hon#supported-appliances)
-[![Supported Models](https://img.shields.io/badge/Models-134-yellowgreen)](https://github.com/Andre0512/hon#supported-appliances)
-[![Supported Entities](https://img.shields.io/badge/Entities-320-crimson)](https://github.com/Andre0512/hon#supported-appliances)  
+[![Supported Languages](https://img.shields.io/badge/Languages-28-royalblue)](https://github.com/Vortim/hon#supported-languages)
+[![Supported Appliances](https://img.shields.io/badge/Appliances-11-forestgreen)](https://github.com/Vortim/hon#supported-appliances)
+[![Supported Models](https://img.shields.io/badge/Models-134-yellowgreen)](https://github.com/Vortim/hon#supported-appliances)
+[![Supported Entities](https://img.shields.io/badge/Entities-320-crimson)](https://github.com/Vortim/hon#supported-appliances)  
 
 ## Supported Appliances
 _Click to expand..._
@@ -774,17 +774,17 @@ The apps on this (incomplete) list have been requested so far:
 
 ## Contribute
 Want to help us to support more appliances? Or add more sensors? Or help with translating? Or beautify some icons or captions? 
-Check out the [project on GitHub](https://github.com/Andre0512/hon), every contribution is welcome!
+Check out the [project on GitHub](https://github.com/Vortim/hon), every contribution is welcome!
 
 | Please add your appliances data to our [hon-test-data collection](https://github.com/Andre0512/hon-test-data). <br/>This helps us to develop new features and not to break compatibility in newer versions. |
 |-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 ## Useful Links
-* [GitHub repository](https://github.com/Andre0512/hon)
+* [GitHub repository](https://github.com/Vortim/hon)
 * [pyhOn library](https://github.com/Andre0512/pyhOn)
-* [Release notes](https://github.com/Andre0512/hon/releases)
-* [Discussion and help](https://github.com/Andre0512/hon/discussions)
-* [Issues](https://github.com/Andre0512/hon/issues)
+* [Release notes](https://github.com/Vortim/hon/releases)
+* [Upstream discussion and help](https://github.com/Andre0512/hon/discussions)
+* [Issues](https://github.com/Vortim/hon/issues)
 
 ## Support
 If you find this project helpful and would like to support its development, you can buy me a coffee! ☕

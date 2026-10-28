@@ -1,11 +1,11 @@
 # Haier hOn
-[![hacs_badge](https://img.shields.io/badge/hacs-Default-41BDF5.svg)](https://hacs.xyz)
-[![GitHub](https://img.shields.io/github/license/Andre0512/hon?color=red)](https://github.com/Andre0512/hon/blob/main/LICENSE)
+[![hacs_badge](https://img.shields.io/badge/hacs-Custom-41BDF5.svg)](https://hacs.xyz)
+[![GitHub](https://img.shields.io/github/license/Vortim/hon?color=red)](https://github.com/Vortim/hon/blob/main/LICENSE)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/Vortim/hon/ci.yml?branch=main&label=checks)](https://github.com/Vortim/hon/actions/workflows/ci.yml)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-donate-orange.svg)](https://www.buymeacoffee.com/andre0512)  
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Andre0512/hon?color=green)](https://github.com/Andre0512/hon/releases/latest)
-[![GitHub all releases](https://img.shields.io/github/downloads/Andre0512/hon/latest/total?color=blue&label=downloads)](https://tooomm.github.io/github-release-stats/?username=Andre0512&repository=hon)
-[![GitHub all releases](https://img.shields.io/github/downloads/Andre0512/hon/total?color=blue&label=total%20downloads)](https://tooomm.github.io/github-release-stats/?username=Andre0512&repository=hon)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Vortim/hon?color=green)](https://github.com/Vortim/hon/releases/latest)
+[![GitHub all releases](https://img.shields.io/github/downloads/Vortim/hon/latest/total?color=blue&label=downloads)](https://tooomm.github.io/github-release-stats/?username=Vortim&repository=hon)
+[![GitHub all releases](https://img.shields.io/github/downloads/Vortim/hon/total?color=blue&label=total%20downloads)](https://tooomm.github.io/github-release-stats/?username=Vortim&repository=hon)
 
 ---
 
@@ -14,15 +14,15 @@ Home Assistant integration for [Haier's mobile app hOn](https://hon-smarthome.co
 ---
 
 
-[![Supported Languages](https://img.shields.io/badge/Languages-28-royalblue)](https://github.com/Andre0512/hon#supported-languages)
-[![Supported Appliances](https://img.shields.io/badge/Appliances-11-forestgreen)](https://github.com/Andre0512/hon#supported-appliances)
-[![Supported Models](https://img.shields.io/badge/Models-134-yellowgreen)](https://github.com/Andre0512/hon#supported-appliances)
-[![Supported Entities](https://img.shields.io/badge/Entities-320-crimson)](https://github.com/Andre0512/hon#supported-appliances)
+[![Supported Languages](https://img.shields.io/badge/Languages-28-royalblue)](https://github.com/Vortim/hon#supported-languages)
+[![Supported Appliances](https://img.shields.io/badge/Appliances-11-forestgreen)](https://github.com/Vortim/hon#supported-appliances)
+[![Supported Models](https://img.shields.io/badge/Models-134-yellowgreen)](https://github.com/Vortim/hon#supported-appliances)
+[![Supported Entities](https://img.shields.io/badge/Entities-320-crimson)](https://github.com/Vortim/hon#supported-appliances)
 
 ## Takedown Story
 Haier sent a takedown notice and threatened legal action. The community started a big riot and called for a Haier boycott, the repository was forked over 2000+ times to make the code undeletable. Haier starts a dialog to find a joint solution. Read all about it here:  
-- [Timeline of events](https://github.com/Andre0512/hon/blob/main/takedown_timeline.md)
-- [Takedown FAQs](https://github.com/Andre0512/hon/blob/main/takedown_faq.md)
+- [Timeline of events](https://github.com/Vortim/hon/blob/main/takedown_timeline.md)
+- [Takedown FAQs](https://github.com/Vortim/hon/blob/main/takedown_faq.md)
 - [Main discussion](https://github.com/Andre0512/hon/issues/147)
 - [Summary video](https://www.youtube.com/watch?v=ayG7o74kdbc)
 - [Haier's Statement](https://github.com/Andre0512/hon/issues/147#issuecomment-1923622715)
@@ -735,11 +735,11 @@ Support has been confirmed for these **44 models**, but many more will work. Ple
 
 
 ## Installation
-**Method 1:** [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Andre0512&repository=hon&category=integration)
+**Method 1:** [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Vortim&repository=hon&category=integration)
 
 **Method 2:** [HACS](https://hacs.xyz/) > Integrations > Add Integration > **Haier hOn** > Install  
 
-**Method 3:** Manually copy `hon` folder from [latest release](https://github.com/Andre0512/hon/releases/latest) to `config/custom_components` folder.
+**Method 3:** Manually copy `hon` folder from [latest release](https://github.com/Vortim/hon/releases/latest) to `config/custom_components` folder.
 
 _Restart Home Assistant_
 
@@ -845,7 +845,7 @@ For every device exists a button under diagnostics which can be used to log all 
             ),
         ...
     ```
-5. Create a [pull request](https://github.com/Andre0512/hon/pulls)
+5. Create a [pull request](https://github.com/Vortim/hon/pulls)
 
 #### Tips and Tricks
 - If you want to have some states humanreadable, have a look at the `translation_key` parameter of the `EntityDescription`.
